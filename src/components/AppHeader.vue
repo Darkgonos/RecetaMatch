@@ -13,7 +13,7 @@
     <meta name="author" content="Oussama Ibn Rass" />
     <title>RecetaMatch - {{ $route.name }}</title>
     <link
-      href="http://fonts.googleapis.com/css?family=Raleway:400,300,500,600,700,800"
+      href="https://fonts.googleapis.com/css?family=Raleway:400,300,500,600,700,800"
       rel="stylesheet"
     />
     <link rel="icon" type="image/x-icon" href="../frontend/images/favicon.ico" />
