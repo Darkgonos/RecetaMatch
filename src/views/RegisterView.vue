@@ -1,0 +1,44 @@
+<template>
+
+<!--main-->
+	<main class="main" role="main">
+		<!--wrap-->
+		<div class="wrap clearfix">
+			<!--row-->
+			<div class="row">
+			<!--content-->
+				<section class="content center full-width">
+					<div class="modal container">
+						<h3>Register</h3>
+						<div class="f-row">
+							<input type="text" placeholder="Your name" />
+						</div>
+						<div class="f-row">
+							<input type="email" placeholder="Your email" />
+						</div>
+						<div class="f-row">
+							<input type="password" placeholder="Your password" />
+						</div>
+						<div class="f-row">
+							<input type="password" placeholder="Retype password" />
+						</div>
+						
+						<div class="f-row bwrap">
+							<input type="submit" value="register" />
+						</div>
+						<p>Already have an account yet? <router-link to="/Sign_in">Log in.</router-link></p>
+					</div>
+				</section>
+				<!--//content-->
+			</div>
+			<!--//row-->
+		</div>
+		<!--//wrap-->
+	</main>
+	<!--//main-->
+
+</template>
+
+<script>
+
+</script>
