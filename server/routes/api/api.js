@@ -2,6 +2,7 @@ const express = require('express');
 const Recipes = require('../schemaRecipe');
 const User = require('../schemaUser');
 const Comment = require('../schemaComment');
+const Message = require('../schemaMessage');
 const protectRoute = require('../authorization');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -684,6 +685,79 @@ api.delete('/Comment/:id', protectRoute("user"), async (req, res) => {
       res.status(200).send({ ok: true, message: "Comment deleted successfully" });
     } catch (error) {
       res.status(400).send({ ok: false, error: "Error deleting the comment", details: error });
+    }
+  });
+  
+// ---------------------------------------------- MESSAGE API ----------------------------------------------
+
+// Create a new message
+api.post('/Message', async (req, res) => {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const lastMessage = await Message.findOne().sort({ id: -1 });
+        const newId = lastMessage ? lastMessage.id + 1 : 1;
+
+        const newMessage = new Message({
+            id: newId,
+            name,
+            email,
+            message,
+            readit: 0,
+            createdat: new Date()
+        });
+
+        await newMessage.save();
+        res.status(201).json(newMessage);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error saving message' });
+    }
+});
+
+
+// Get all Messages
+api.get('/Message', protectRoute("admin"), async (req, res) => {
+    try {
+      const messages = await Message.find().sort({ createdat: -1 });
+      res.status(200).json(messages);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching messages' });
+    }
+  });
+
+// Delete recipe by id 
+api.delete('/Message/:id', protectRoute("admin"), (req, res) => {
+    let messageId = req.params.id;
+    Message.findOneAndDelete({"id": messageId})
+        .then(result => {
+            if (result)
+                res.status(200).send({ ok: true, message: "Message deleted successfully" });
+            else
+                res.status(404).send({ ok: false, error: "The Message doesn't exist" });
+        })
+        .catch(error => {
+            res.status(400).send({ ok: false, error: "Error deleting the Message" });
+        });
+});
+
+
+// Update message read status
+api.put('/Message/:id/read', protectRoute("admin"), async (req, res) => {
+    const messageId = req.params.id;
+  
+    try {
+      const message = await Message.findOneAndUpdate({ id: messageId }, { readit: 1 }, { new: true });
+      if (!message) {
+        return res.status(404).json({ error: "Message not found" });
+      }
+      res.status(200).json(message);
+    } catch (error) {
+      res.status(500).json({ error: "Error updating message read status" });
     }
   });
   
