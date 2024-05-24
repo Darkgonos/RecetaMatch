@@ -136,7 +136,7 @@
           <!--entries-->
           <div class="entries row">
             <div
-              v-for="recipe in displayedRecipes"
+              v-for="recipe in displayedRecipescat"
               :key="recipe.id"
               class="entry one-fourth"
             >
@@ -172,7 +172,7 @@
           </div>
           <!--//entries-->
           <div class="quicklinks">
-            <button @click="loadMoreRecipes" class="button">
+            <button @click="loadMoreRecipesCat" class="button">
               More recipes
             </button>
             <a href="#" class="button scroll-to-top"
@@ -190,9 +190,28 @@
 </template>
 
 <script>
-import { loads } from "../mixins/loads.js";
+import { RecipCat } from "../mixins/category.js";
 
 export default {
-  mixins: [loads]
+  mixins: [RecipCat],
+  watch: {
+    '$route': 'loadRecipesCatOnRouteChange'
+  },
+  methods: {
+    async loadRecipesCatOnRouteChange() {
+      try {
+        const category = this.$route.params.recipeCat;
+        await this.loadRecipesCat(category);
+        if (this.recipesCat.length === 0) {
+          this.$router.push('/recipes');
+        }
+      } catch (error) {
+        console.error("Error loading recipes by category:", error);
+      }
+    }
+  },
+  mounted() {
+    this.loadRecipesCatOnRouteChange();
+  }
 };
 </script>

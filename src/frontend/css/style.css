@@ -93,7 +93,7 @@ p.drop-cap.secondary::first-letter	{background:#F4716A;color:#fff;padding:7px;ma
 table 	{width:100%;border-collapse:separate;border-spacing:1px;margin:0 0 20px;max-width:100%;}
 th  		{padding:15px;border:1px solid #F4716A;background:#F4716A;color:#fff;}
 td 		{padding:15px;border:1px solid #ddd;background:#fff;}
-tr:nth-child(2n+1) td{background:#f6f6f6;}
+tr.noread td {background: #f6f6f6; font-weight: bold;}
 
 .left-pic 	{float:left;margin:0 20px 20px 0;}
 .right-pic 	{float:right;margin:0 0 20px 20px;}
@@ -246,6 +246,8 @@ h2.large		{background-position:0 0;width:572px;height:58px;position:static;font-
 .entries h2					{font-size:17px;font-weight:600;padding:0 0 17px;color:#454545;}
 .entry figure 					{position:relative;overflow:hidden;}
 .entry img 				{width:100%;} 	
+.entryimg 				{width:100%;height:600px;object-fit: cover;} 
+.entryimg2 				{width:100%;height:270px;object-fit: cover;}
 .entry figcaption				{opacity:0;position:absolute;top:0;left:0;z-index:10;text-align:center;background:rgba(255, 142, 136, 0.85);width:100%;height:100%;-webkit-transition:all 0.2s ease-in;-moz-transition:all 0.4s ease-in;-o-transition:all 0.4s ease-in;-ms-transition:all 0.4s ease-in;transition:all 0.4s ease-in;}
 .entry figcaption a 			{float:left;width:100%;height:100%;color:#fff;font-size:17px;font-weight:600;-webkit-transition:all 0.2s ease-in;-moz-transition:all 0.4s ease-in;-o-transition:all 0.4s ease-in;-ms-transition:all 0.4s ease-in;transition:all 0.4s ease-in;}
 .entry figcaption .icon 			{display:inline-block;margin:27% 0 3px;font-size:30px;}
@@ -357,7 +359,8 @@ section.cta h2 	{padding:0;line-height:48px;}
 
 /*RECIPE*/
 .recipe 			{float:left;max-width:100%;}
-.recipe .image 	{float:left;width:100%;-webkit-box-shadow:0 0 1px rgba(0,0,0,.2);-moz-box-shadow:0 0 1px rgba(0,0,0,.2);box-shadow:0 0 1px rgba(0,0,0,.2);}
+.recipe .image 	{float:left;width:100%;height:400px;-webkit-box-shadow:0 0 1px rgba(0,0,0,.2);-moz-box-shadow:0 0 1px rgba(0,0,0,.2);box-shadow:0 0 1px rgba(0,0,0,.2);overflow: hidden;}
+.recipe .image img {width: 100%;height: 100%;object-fit: cover;}
 
 .recipe .intro 	{width:100%;height:auto;min-height:0;margin:0 0 30px;background:#fff;padding:17px 20px;border:none;-webkit-box-shadow:0 0 1px rgba(0,0,0,.2);-moz-box-shadow:0 0 1px rgba(0,0,0,.2);box-shadow:0 0 1px rgba(0,0,0,.2);}
 .recipe .intro p {color:#666;padding:0 0 15px;}
@@ -380,9 +383,16 @@ dl 			{display:inline-block;width:100%;margin:0 0 22px;}
 .user dt 			{width:50%;font-size:13px;}
 .user dd 		{width:50%;background:#DBBC94;}
 .user dd a 		{color:#fff;}
-.ingredients dt 	{width:35%;font-size:13px;}
-.ingredients dd 	{width:65%;}	
-	
+.ingredients dt 	{width:50%;font-size:13px;}
+.ingredients dd 	{width:50%;}	
+.ingredients dt, .ingredients dd {
+  display: inline-block; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
+
 .nutrition table 	{width:100%;border-spacing:0;border-collapse:collapse;margin:0;}
 .nutrition td 	{border:none;border-top:1px solid #ddd;padding:9px 20px;color:#666;background:#fff !important;font-size:13px;}
 .nutrition td:last-child {text-align:right;color:#444;}
@@ -445,8 +455,8 @@ dl 			{display:inline-block;width:100%;margin:0 0 22px;}
 
 
 /*MY PROFILE*/
-.tab-content .basic dt 	{width:38%;height:38px;line-height:40px;}
-.tab-content .basic dd 	{width:62%;height:38px;line-height:38px;}
+.tab-content .basic dt 	{width:45%;height:38px;line-height:40px;}
+.tab-content .basic dd 	{width:55%;height:38px;line-height:38px;}
 
 .my_account h2 {padding:4px 0 21px;}
 
@@ -730,7 +740,10 @@ div.uploader.disabled.active span.action 		{}
 
 .featured img,
 .my_account figure img,
-.entry img 				{width:100%;} 		
+.entry img 				{width:100%;} 	
+.entryimg 				{width:100%;height:320px;object-fit: cover;}	
+.recipe .image 	{float:left;width:100%;height:300px;-webkit-box-shadow:0 0 1px rgba(0,0,0,.2);-moz-box-shadow:0 0 1px rgba(0,0,0,.2);box-shadow:0 0 1px rgba(0,0,0,.2);overflow: hidden;}
+.recipe .image img {width: 100%;height: 100%;object-fit: cover;}
 .featured.one-third	{width:100%;}
 .featured.one-third figure		{float:left;width:30%;}	
 .featured.one-third .container 	{float:left;width:70%;}

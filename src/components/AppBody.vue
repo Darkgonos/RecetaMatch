@@ -34,7 +34,11 @@
               </router-link>
             </li>
             <li class="medium">
-              <router-link to="/Sign_in">
+              <router-link v-if="isAuthenticated" to="/Profil">
+                <i class="icon icon-recetamatch_chef-hat"></i>
+                <span>Go to profil</span>
+              </router-link>
+              <router-link v-else to="/Sign_in">
                 <i class="icon icon-recetamatch_chef-hat"></i>
                 <span>Sign up / Sign in</span>
               </router-link>
@@ -56,24 +60,31 @@
 </template>
 <script>
   /* eslint-disable */
-  export default {
-    name: 'AppBody',
-    data() {
-      return {
-        isHomePage: false,
-        isErrorPage: false,
-      };
+export default {
+  name: 'AppBody',
+  data() {
+    return {
+      isHomePage: false,
+      isErrorPage: false,
+      isAuthenticated: false,
+    };
+  },
+  watch: {
+    '$route'(to, from) {
+      this.isHomePage = to.path === '/';
+      this.isErrorPage = to.path === '/404';
+      this.checkAuthentication();
     },
-    watch: {
-      '$route'(to, from) {
-        this.isHomePage = to.path === '/';
-        this.isErrorPage = to.path === '/404';
-      },
+  },
+  created() {
+    this.isHomePage = this.$route.path === '/';
+    this.isErrorPage = this.$route.path === '/404';
+    this.checkAuthentication();
+  },
+  methods: {
+    checkAuthentication() {
+      this.isAuthenticated = !!localStorage.getItem('token');
     },
-    created() {
-      this.isHomePage = this.$route.path === '/';
-      this.isErrorPage = this.$route.path === '/404';
-    },
-  };
-
+  },
+};
 </script>

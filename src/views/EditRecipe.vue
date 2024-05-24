@@ -1,29 +1,26 @@
 <template>
-  <main class="main" role="main">
+  <main class="main" role="main" v-if="isAllowed">
     <div class="wrap clearfix">
       <nav class="breadcrumbs">
         <ul>
           <li><router-link to="/">Home</router-link></li>
-          <li>Submit a recipe</li>
+          <li>Edit recipe</li>
         </ul>
       </nav>
 
       <div class="row">
         <header class="s-title">
-          <h1>Add a new recipe</h1>
+          <h1>Edit Recipe</h1>
         </header>
 
         <section class="content full-width">
           <div class="submit_recipe container">
             <section>
-              <h2>Basics</h2>
-              <p>All fields are required.</p>
               <div class="f-row">
                 <div class="full">
                   <input
-                    v-model="newRecipe.title"
                     type="text"
-                    placeholder="Recipe title"
+                    v-model="recipeTitle"
                     required
                   />
                 </div>
@@ -31,16 +28,16 @@
               <div class="f-row">
                 <div class="third">
                   <input
-                    v-model="newRecipe.preptime"
                     type="text"
+                    v-model="preparationTime"
                     placeholder="Preparation time (for example 5min)"
                     required
                   />
                 </div>
                 <div class="third">
                   <input
-                    v-model="newRecipe.cookingtime"
                     type="text"
+                    v-model="cookingTime"
                     placeholder="Cooking time (for example 10min)"
                     required
                   />
@@ -48,7 +45,7 @@
               </div>
               <div class="f-row">
                 <div class="third">
-                  <select v-model="newRecipe.difficulty" required>
+                  <select v-model="difficulty" required>
                     <option disabled value="">Select Difficulty</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -56,7 +53,7 @@
                   </select>
                 </div>
                 <div class="third">
-                  <select v-model="newRecipe.category" required>
+                  <select v-model="category" required>
                     <option disabled value="">Select a category</option>
                     <option value="Meat">Meat</option>
                     <option value="Vegetarian">Vegetarian</option>
@@ -78,7 +75,7 @@
               <div class="f-row">
                 <div class="full">
                   <textarea
-                    v-model="newRecipe.description"
+                    v-model="recipeDescription"
                     placeholder="Recipe Description"
                     required
                   ></textarea>
@@ -89,14 +86,14 @@
             <section>
               <h2>Ingredients</h2>
               <div
-                v-for="(ingredient, index) in newRecipe.ingredients"
-                :key="index"
                 class="f-row ingredient"
+                v-for="(ingredient, index) in ingredients"
+                :key="index"
               >
                 <div class="large">
                   <input
                     type="text"
-                    v-model="ingredient.ingredient"
+                    v-model="ingredient.name"
                     placeholder="Ingredient"
                     required
                   />
@@ -126,14 +123,14 @@
                 <span>(enter instructions, each step at a time)</span>
               </h2>
               <div
-                v-for="(instruction, index) in newRecipe.instructions"
-                :key="index"
                 class="f-row instruction"
+                v-for="(step, index) in recipeSteps"
+                :key="index"
               >
                 <div class="full">
                   <input
                     type="text"
-                    v-model="instruction.text"
+                    v-model="recipeSteps[index]"
                     placeholder="Instructions"
                     required
                   />
@@ -148,20 +145,26 @@
             </section>
 
             <section>
-  <h2>Photo</h2>
-  <div class="f-row full">
-    <input ref="fileInput" type="file" />
-  </div>
-</section>
+              <h2>Photo</h2>
+              <div class="f-row full">
+                <div class="image">
+                  <img :src="recipeImage" alt="Recipe Image" />
+                </div>
+                <br><br>
+                <input ref="fileInput" type="file" @change="handleFileUpload" />
+              </div>
+            </section>
 
-
-            <div class="f-row full">
+            <center><div class="f-row full">
               <button @click="submitRecipe" class="button">
-                Publish this recipe
+                Edit this recipe
               </button>
+            </div></center>
+            <div class="error-message" v-if="errorMessage">
+              {{ errorMessage }}
             </div>
-            <div v-if="submissionStatus" :class="submissionStatus === 'success' ? 'success-message' : 'error-message'">
-                <h3> {{ submissionMessage }} </h3>
+            <div class="success-message" v-if="successMessage">
+              {{ successMessage }}
             </div>
             <br>
           </div>
@@ -172,10 +175,54 @@
 </template>
 
 <script>
-import { postRecipeMixin } from "../mixins/addrecipe.js";
+import { CurrentUser } from '../mixins/currentuser.js';
+import { Recipeid } from "../mixins/recipeid.js";
+import { editRecipe } from "../mixins/editrecipe.js";
 
 export default {
-  mixins: [postRecipeMixin],
+  mixins: [CurrentUser, Recipeid, editRecipe],
+  data() {
+    return {
+      isAllowed: true,
+      recipeId: this.$route.params.id
+    };
+  },
+  mounted() {
+    this.checkAdminAccess();
+  },
+  updated() {
+    this.checkAdminAccess();
+  },
+  methods: {
+    checkAdminAccess() {
+      if (this.currentUser && this.currentUser.isAdmin !== 1) {
+        this.isAllowed = false;
+        this.$router.push('/');
+      }
+    },
+    addIngredient() {
+      this.ingredients.push({ name: '', measure: '' });
+    },
+    removeIngredient(index) {
+      this.ingredients.splice(index, 1);
+    },
+    addInstruction() {
+      this.recipeSteps.push('');
+    },
+    removeInstruction(index) {
+      this.recipeSteps.splice(index, 1);
+    },
+    async submitRecipe() {
+      this.errorMessage = '';
+      this.successMessage = '';
+      
+      try {
+        await this.updateRecipe();
+      } catch (error) {
+        this.errorMessage = error.message || "An error occurred while updating the recipe.";
+      }
+    }
+  }
 };
 </script>
 
@@ -189,5 +236,4 @@ export default {
   color: green;
   text-align: center;
 }
-
 </style>

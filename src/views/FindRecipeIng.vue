@@ -86,6 +86,53 @@
             </div>
           </div>
           <!--//recipefinder-->
+
+           <!--results-->
+          <div class="entries row">
+            <div
+              v-for="recipe in displayedRecipesing"
+              :key="recipe.id"
+              class="entry one-fourth"
+            >
+              <figure class="entryimg2">
+                <img :src="recipe.image" alt="" />
+                <figcaption>
+                  <router-link :to="`/recipe/${recipe.id}`">
+                    <i class="icon icon-recetamatch_eye2"></i>
+                    <span>View recipe</span>
+                  </router-link>
+                </figcaption>
+              </figure>
+              <div class="container">
+                <h2>{{ recipe.title }}</h2>
+                <div class="actions">
+                  <div>
+                    <div class="difficulty">
+                      <i :class="'ico i-' + recipe.difficulty"></i>
+                      <a href="#">{{ recipe.difficulty }}</a>
+                    </div>
+                    <div class="likes">
+                      <i class="fa fa-heart"></i>
+                      <a href="#">0</a>
+                    </div>
+                    <div class="comments">
+                      <i class="fa fa-comment"></i>
+                      <a href="#">0</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--//results-->
+          <div class="quicklinks">
+            <button @click="loadMoreRecipesIng" class="button">
+              More recipes
+            </button>
+            <a href="#" class="button scroll-to-top"
+              >Back to top</a
+            >
+          </div>
         </section>
         <!--//content-->
       </div>
@@ -97,7 +144,10 @@
 </template>
 
 <script>
+import { search } from "../mixins/search.js";
+
 export default {
+  mixins: [search],
   data() {
     return {
       newIngredient: "",
@@ -117,6 +167,9 @@ export default {
       ],
       emphasizedIndex: null,
     };
+  },
+  watch: {
+    '$route': 'loadRecipesIngOnRouteChange'
   },
   methods: {
     addIngredient() {
@@ -144,7 +197,7 @@ export default {
       }
     },
     searchRecipes() {
-      const recipeIng = this.ingredients.join(",");
+      const recipeIng = this.ingredients.join(',');
       this.$router.push(`/FindRecipe/${recipeIng}`);
     },
     searchRecipesName() {
@@ -153,7 +206,21 @@ export default {
         this.$router.push(`/FindRecipes/${recipeName}`);
       }
     },
+    async loadRecipesIngOnRouteChange() {
+      try {
+        const ingredient = this.$route.params.recipeIng;
+        await this.loadRecipesIng(ingredient);
+        if (this.recipesIng.length === 0) {
+          this.$router.push('/FindRecipe');
+        }
+      } catch (error) {
+        console.error("Error loading recipes by category:", error);
+      }
+    }
   },
+  mounted() {
+    this.loadRecipesIngOnRouteChange();
+  }
 };
 </script>
 
